@@ -95,13 +95,14 @@
 							
               	<p><h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：原进榜   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 时间:2016年11月18日</h4></p>  
               
-    <p>一.前言：
-　　版本信息：Okphp BBS v1.3 开源版
+    <p>一.前言：</p><br/>
+　　<p>版本信息：Okphp BBS v1.3 开源版
 　　下载地址：http://www.cncode.com/SoftView.asp?SoftID=1800
 　　由于PHP和MYSQL本身得原因,PHP+MYSQL的注射要比asp困难，尤其是注射时语句的构造方面更是个难点，本文主要是借对Okphp BBS v1.3一些文件得简单分析，来谈谈php+mysql注射语句构造方式，希望本文对你有点帮助。
 　　声明：文章所有提到的“漏洞”，都没有经过测试，可能根本不存在，其实有没有漏洞并不重要，重要的是分析思路和语句构造。</p>
-　　<p>二.“漏洞”分析：
-　　1.admin/login.php注射导致绕过身份验证漏洞：
+<br/>
+　　<p>二.“漏洞”分析：</p><br/>
+　　<p>1.admin/login.php注射导致绕过身份验证漏洞：
 　　代码：
 　　$conn=sql_connect($dbhost, $dbuser, $dbpswd, $dbname);
 　　$password = md5($password);
