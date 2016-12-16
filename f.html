@@ -100,17 +100,16 @@
 	
   Memcached是danga.com（运营LiveJournal的技术团队）开发的一套分布式内存对象缓存系统，用于在动态系统中减少数据库负载， 提升性能。关于这个东西，相信很多人都用过，本文意在通过对memcached的实现及代码分析，获得对这个出色的开源软件更深入的了解，并可以根据我们 的需要对其进行更进一步的优化。末了将通过对BSM_Memcache扩展的分析，加深对memcached的使用方式理解。
 
-  本文的部分内容可能需要比较好的数学基础作为辅助。
-  
+本文的部分内容可能需要比较好的数学基础作为辅助。
 
 ◎Memcached是什么
 
-  在 阐述这个问题之前，我们首先要清楚它“不是什么”。很多人把它当作和SharedMemory那种形式的存储载体来使用，虽然memcached使用了同 样的“Key=>Value”方式组织数据，但是它和共享内存、APC等本地缓存有非常大的区别。Memcached是分布式的，也就是说它不是本 地的。它基于网络连接（当然它也可以使用localhost）方式完成服务，本身它是一个独立于应用的程序或守护进程（Daemon方式）。
+在 阐述这个问题之前，我们首先要清楚它“不是什么”。很多人把它当作和SharedMemory那种形式的存储载体来使用，虽然memcached使用了同 样的“Key=>Value”方式组织数据，但是它和共享内存、APC等本地缓存有非常大的区别。Memcached是分布式的，也就是说它不是本 地的。它基于网络连接（当然它也可以使用localhost）方式完成服务，本身它是一个独立于应用的程序或守护进程（Daemon方式）。
 
-  Memcached 使用libevent库实现网络连接服务，理论上可以处理无限多的连接，但是它和Apache不同，它更多的时候是面向稳定的持续连接的，所以它实际的并 发能力是有限制的。在保守情况下memcached的最大同时连接数为200，这和Linux线程能力有关系，这个数值是可以调整的。关于 libevent可以参考相关文档。 Memcached内存使用方式也和APC不同。APC是基于共享内存和MMAP的，memcachd有自己的内存分配算法和管理方式，它和共享内存没有 关系，也没有共享内存的限制，通常情况下，每个memcached进程可以管理2GB的内存空间，如果需要更多的空间，可以增加进程数。 
+Memcached 使用libevent库实现网络连接服务，理论上可以处理无限多的连接，但是它和Apache不同，它更多的时候是面向稳定的持续连接的，所以它实际的并 发能力是有限制的。在保守情况下memcached的最大同时连接数为200，这和Linux线程能力有关系，这个数值是可以调整的。关于 libevent可以参考相关文档。 Memcached内存使用方式也和APC不同。APC是基于共享内存和MMAP的，memcachd有自己的内存分配算法和管理方式，它和共享内存没有 关系，也没有共享内存的限制，通常情况下，每个memcached进程可以管理2GB的内存空间，如果需要更多的空间，可以增加进程数。 
+
 
 ◎Memcached适合什么场合
-  
 
 在很多时候，memcached都被滥用了，这当然少不了对它的抱怨。我经常在论坛上看见有人发贴，类似于“如何提高效率”，回复是“用memcached”，至于怎么用，用在哪里，用来干什么一句没有。memcached不是万能的，它也不是适用在所有场合。
 
@@ -160,9 +159,9 @@ daemon(nochdir, noclose)
     }
     return (0);
 }
-  这个函数 fork 了整个进程之后，父进程就退出，接着重新定位 STDIN 、 STDOUT 、 STDERR 到空设备， daemon 就建立成功了。 
+这个函数 fork 了整个进程之后，父进程就退出，接着重新定位 STDIN 、 STDOUT 、 STDERR 到空设备， daemon 就建立成功了。 
 
-  Memcached 本身的启动过程，在 memcached.c 的 main 函数中顺序如下： 
+Memcached 本身的启动过程，在 memcached.c 的 main 函数中顺序如下： 
 
 1 、调用 settings_init() 设定初始化参数
 2 、从启动命令中读取参数来设置 setting 值
@@ -334,12 +333,66 @@ nsuffix：后缀长
 
 一个完整的item长度是键长＋值长＋后缀长＋item结构大小（32字节），item操作就是根据这个长度来计算slab的classid的。
 
-                
-                
-                
-                
+hashtable 中的每一个桶上挂着一个双链表，item_init()的时候已经初始化了heads、tails、sizes三个数组为0，这三个数组的大小都为常量 LARGEST_ID（默认为255，这个值需要配合factor来修改），在每次item_assoc()的时候，它会首先尝试从slab中获取一块空 闲的chunk，如果没有可用的chunk，会在链表中扫描50次，以得到一个被LRU踢掉的item，将它unlink，然后将需要插入的item插入 链表中。
 
+注意item的refcount成员。item被unlink之后只是从链表上摘掉，不是立刻就被free的，只是将它放到删除队列中（item_unlink_q()函数）。
 
+item对应一些读写操作，包括remove、update、replace，当然最重要的就是alloc操作。
+
+item 还有一个特性就是它有过期时间，这是memcached的一个很有用的特性，很多应用都是依赖于memcached的item过期，比如session存 储、操作锁等。item_flush_expired()函数就是扫描表中的item，对过期的item执行unlink操作，当然这只是一个回收动作， 实际上在get的时候还要进行时间判断：
+CODE:
+/* expires items that are more recent than the oldest_live setting. */
+void item_flush_expired() {
+    int i;  
+    item *iter, *next;
+    if (! settings.oldest_live)
+        return; 
+    for (i = 0; i < LARGEST_ID; i++) {
+        /* The LRU is sorted in decreasing time order, and an item's timestamp
+         * is never newer than its last access time, so we only need to walk
+         * back until we hit an item older than the oldest_live time.
+         * The oldest_live checking will auto-expire the remaining items.
+         */
+        for (iter = heads[i]; iter != NULL; iter = next) { 
+            if (iter->time >= settings.oldest_live) {
+                next = iter->next;
+                if ((iter->it_flags & ITEM_SLABBED) == 0) { 
+                    item_unlink(iter);
+                }       
+            } else {
+                /* We've hit the first old item. Continue to the next queue. */
+                break;  
+            }       
+        }       
+    }
+}
+ 
+CODE:
+/* wrapper around assoc_find which does the lazy expiration/deletion logic */
+item *get_item_notedeleted(char *key, size_t nkey, int *delete_locked) {
+    item *it = assoc_find(key, nkey);
+    if (delete_locked) *delete_locked = 0;
+    if (it && (it->it_flags & ITEM_DELETED)) {
+        /* it's flagged as delete-locked.  let's see if that condition
+           is past due, and the 5-second delete_timer just hasn't
+           gotten to it yet... */
+        if (! item_delete_lock_over(it)) {
+            if (delete_locked) *delete_locked = 1;
+            it = 0; 
+        }       
+    }
+    if (it && settings.oldest_live && settings.oldest_live <= current_time &&
+        it->time <= settings.oldest_live) {
+        item_unlink(it);
+        it = 0; 
+    }
+    if (it && it->exptime && it->exptime <= current_time) {
+        item_unlink(it);
+        it = 0; 
+    }
+    return it;
+}
+Memcached的内存管理方式是非常精巧和高效的，它很大程度上减少了直接alloc系统内存的次数，降低函数开销和内存碎片产生几率，虽然这种方式会造成一些冗余浪费，但是这种浪费在大型系统应用中是微不足道的。
 
 								</pre>
 							</code>
