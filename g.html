@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>原进榜的博客</title>
+		<link rel="stylesheet" href="./css/bootstrap.css" >
+		<script src="./js/jquery-3.1.1.min.js"></script>
+		<script src="/js/bootstrap.min.js"></script>
+		<style>
+			
+			
+			#title{width:100%; height:200px; background:#ccc;}
+			#ss{font-size:42px; top:60px; position:absolute; left:80px;}
+			.form-group{position:absolute; left:700px; top:80px;}
+			.container{width:100%;}
+			.navbar-nav{margin-left:80px;}
+			.navbar-nav li{margin-left:50px;}
+			.column{margin-left:50px; border:1px solid #ddd;}
+			#cont{background:#ccc;}
+			/*#title{
+				width:100%;
+				height:200px;
+				background:#ccc;
+
+
+			}
+
+			.container{
+				width:100%;
+			}*/
+			#wz{
+				font-size:20px;
+				color:#abc;
+				position:absolute;
+				top:110px;
+				left:80px;
+			
+			}
+
+			
+		</style>
+	</head>
+	<body>
+	
+		<div class="container">
+			<div class="row clearfix">
+				<div id="title">
+					<span id="ss">Benson的博客</span>
+					<span id="wz">http://www.yuanjinbang.cn</span>
+					<form class="navbar-form navbar-left" role="search">
+						<div class="form-group">
+							<input class="form-control" type="text" />
+							<button type="submit" class="btn btn-default">搜索</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="container">
+			<div class="row clearfix">
+					<nav class="navbar navbar-default" role="navigation">
+						<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1" >
+							<ul class="nav navbar-nav">
+								<li class="active">
+									 <a href="./index.html">首页</a>
+								</li>
+								<li>
+									 <a href="./phpbase.html">PHP</a>
+								</li>
+								<li>
+									 <a href="./master.html">日常八卦</a>
+								</li>
+								<li>
+									 <a href="#">杂志</a>
+								</li>
+								<li>
+									 <a href="#">git</a>
+								</li>
+								<li>
+									 <a href="#">工具</a>
+								</li>
+								<li>
+									 <a href="./zt.html">杂谈</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+			</div>
+			<div class="row clearfix" >
+				<div class="col-md-7 column">
+					<div class="card" id="name1">
+						<h2>ECMAScript的简析</h2>
+							<p><h4>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作者：原进榜   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 时间:2016年12月30日</h4></p>  
+							
+						<div id="cont">
+							<code>
+								<pre>
+1998年6月，ECMAScript 2.0版发布。
+1999年12月，ECMAScript 3.0版发布，成为JavaScript的通行标准，得到了广泛支持。
+2007年10月，ECMAScript 4.0版草案发布，对3.0版做了大幅升级，预计次年8月发布正式版本。草案发布后，由于4.0版的目标过于激进，各方对于是否通过这个标准，发生了严重分歧。以Yahoo、Microsoft、Google为首的大公司，反对JavaScript的大幅升级，主张小幅改动；以JavaScript创造者Brendan Eich为首的Mozilla公司，则坚持当前的草案。
+2008年7月，由于对于下一个版本应该包括哪些功能，各方分歧太大，争论过于激进，ECMA开会决定，中止ECMAScript 4.0的开发，将其中涉及现有功能改善的一小部分，发布为ECMAScript 3.1，而将其他激进的设想扩大范围，放入以后的版本，由于会议的气氛，该版本的项目代号起名为Harmony（和谐）。会后不久，ECMAScript 3.1就改名为ECMAScript 5。
+2009年12月，ECMAScript 5.0版正式发布。Harmony项目则一分为二，一些较为可行的设想定名为JavaScript.next继续开发，后来演变成ECMAScript 6；一些不是很成熟的设想，则被视为JavaScript.next.next，在更远的将来再考虑推出。
+2011年6月，ECMAscript 5.1版发布，并且成为ISO国际标准（ISO/IEC 16262:2011）。
+2013年3月，ECMAScript 6草案冻结，不再添加新功能。新的功能设想将被放到ECMAScript 7。
+2013年12月，ECMAScript 6草案发布。然后是12个月的讨论期，听取各方反馈。
+2015年6月17日，ECMAScript 6发布正式版本，即ECMAScript 2015。
+ECMA的第39号技术专家委员会（Technical Committee 39，简称TC39）负责制订ECMAScript标准，成员包括Microsoft、Mozilla、Google等大公司。TC39的总体考虑是，ES5与ES3基本保持兼容，较大的语法修正和新功能加入，将由JavaScript.next完成。
+版本编辑
+至今为止有六个ECMA-262版本。
+ECMAScript 1
+1997年06月 首版
+ECMAScript 2
+1998年06月 格式修正，以使得其形式与ISO/IEC16262国际标准一致
+ECMAScript 3
+1999年12月 强大的正则表达式，更好的文字链处理，新的控制指令，异常处理，错误定义更加明确，数输出的格式化及其它改变
+ECMAScript 4
+未完成...可能更明确的类的定义，命名空间等等...
+* 2004年6月欧洲计算机制造商协会发表了ECMA-357标准，它是ECMAScript的一个扩延，它也被称为E4X（ECMAScript for XML）。
+ECMAScript 5
+2009年12月发布
+ECMAScript 2015
+2015年6月17日发布。
+截止发布日期，JavaScript的官方名称是ECMAScript 2015，Ecma国际意在更频繁地发布包含小规模增量更新的新版本，下一版本将于2016年发布，命名为ECMAScript 2016。从现在开始，新版本将按照ECMAScript+年份的形式发布。
+ES6是继ES5之后的一次主要改进，语言规范由ES5.1时代的245页扩充至600页。ES6增添了许多必要的特性，例如：模块和类，以及一些实用特性，例如Maps、Sets、Promises、生成器（Generators）等。尽管ES6做了大量的更新，但是它依旧完全向后兼容以前的版本，标准化委员会决定避免由不兼容版本语言导致的“web体验破碎”。结果是，所有老代码都可以正常运行，整个过渡也显得更为平滑，但随之而来的问题是，开发者们抱怨了多年的老问题依然存在。
+截止发布日期，没有一款完全支持ES6的JavaScript代理（无论是浏览器环境还是服务器环境），所以热衷于使用语言最新特性的开发者需要将ES6代码转译为ES5代码。等到主流浏览器完全实现ES6特性大概需要一年左右的时间，若想一睹各代理对于ES6特性的支持情况，我们推荐大家参考由 kangax 维护的 ECMAScript Compatibility Table 。
+ECMAScript 2016的制定工作已经启动，许多 草案 已被提交到委员会，包括以下这些：异步方法、定型对象、并行JavaScript、类修饰符以及observables。虽然委员会正在积极评估这些特性，但我们无法预知它们的未来，其中一些会加入到下一版规范，另一些会加入未来的其它规范，剩下的将最终被遗弃。 TC39进程 解释了新特性从开始到最终被语言采用所经历的各种阶段。[1] 
+ECMA-262的关键字编辑
+ECMA-262[2]  定义了ECMAScript支持的一套关键字，这些关键字标识了ECMAScript语句的开头和/或结尾。根据规定，关键字是保留的，不能用作变量名或函数名。下面是ECMAScript关键字的完整列表：
+break else new var typeof
+case finally return void
+catch for switch while
+default if throw delete
+in try do instanceof
+如果把关键字用作变量名或函数名，可能得到诸如“Identifier expected”（应该有标识符）这样的错误信息。
+ECMA-262的保留字
+ECMAScript定义了一套保留字，保留字在某种意义上是为了将来的而保留的单词。因此，保留字不能被用作变量名或函数名。ECMA-262第3版中保留字的完整列表如下：
+abstract enum int short
+boolean export interface static
+byte extends long super char final
+native synchronized class float package
+throws const goto private transient debugger
+implements protected volatile double
+import public
+如果将保留字用作变量名或函数名，那么除非将来的浏览器实现了该保留字，否则很可能收不到任何错误消息。当浏览器将其实现后，该单词被看作关键字，如此将出现关键字错误。
+1995年Netscape公司发布的Netscape Navigator 2.0中，发布了与Sun联合开发的JavaScript 1.0并且大获成功， 并且随后的3.0版本中发布了JavaScript1.1，恰巧这时微软进军浏览器市场，IE 3.0搭载了一个JavaScript的克隆版-JScript， 再加上Cenvi的ScriptEase（也是一种客户端脚本语言），导致了三种不同版本的客户端脚本语言同时存在。为了建立语言的标准化，1997年JavaScript 1.1作为草案提交给欧洲计算机制造商协会（ECMA），第三十九技术委员会（TC39）被委派来“标准化一个通用的，跨平台的，中立于厂商的脚本语言的语法和语意标准”。最后在Netscape、Sun、微软、Borland等公司的参与下制订了ECMA-262，该标准定义了叫做ECMAScript的全新脚本语言。
+从此以后的Javascript，JScript，ActionScript等脚本语言都是基于ECMAScript标准实现的。
+所以，ECMAScript实际上是一种脚本在语法和语义上的标准。实际上JavaScript是由ECMAScript，DOM和BOM三者组成的。 所以说，在JavaScript，JScript和ActionScript中声明变量，操作数组等语法完全一样，因为它们都是ECMAScript。但是在操作浏览器对象等方面又有各自独特的方法，这些都是各自语言的扩展。
+      
+
+								</pre>
+							</code>
+						</div>
+						
+				    </div>
+				</div>
+				<!-- <div class="col-md-4"> 
+
+						dddd
+				</div> -->
+				<div class="col-md-4 column">
+					<h3>博文链接</h3>
+					<ul>
+						<li>
+							<a href="./a.html" > 面向对象和面向过程的区别</a>
+						</li>
+						<li>
+							<a href="./b.html">PHP的指针引用</a>
+						</li>
+						<li>
+							<a href="./c.html">谈php+mysql注射语句构造</a>
+						</li>
+						<li>
+							<a href="./d.html">MyIsam和InnoDB优缺点</a>
+						</li>
+            <li>
+							<a href="./f.html">Mysql和Oracle优缺点</a>
+						</li>
+            
+            
+           
+           
+					</ul>
+				</div>
+			</div>
+		</div>
+	
+
+	</body>
+</html>
